@@ -1,40 +1,40 @@
 def get_book_text(filepath):
     with open(filepath) as f:
-        return f.read()
+        return f.read(), filepath
 
 def split_book_text(book):
-    # Takes a percieved book and splits the text
-    book_text = book
-    split_text = book_text.split()
-    
-    # Loops through each word and counts the total amount of words
-    num_words = 0
-    for words in split_text:
-        num_words += 1
+    split_text = book.split()
+    num_words = len(split_text)
+    return split_text, num_words
 
-    return split_text
-
-def count_characters():
-    # Lower text and use helper functions to lowercase and split text
-    text = get_book_text('books/frankenstein.txt')
+def count_characters(filepath):
+    text, path = get_book_text(filepath)
     lowercase_book = text.lower()
-    lowercase_split_text = split_book_text(lowercase_book)
+    lowercase_split_text, num_words = split_book_text(lowercase_book)
 
-    # Initialize the dictionary
-    # o: 2390
     letters = {}
+    for word in lowercase_split_text:
+        for symbol in word:
+            letters[symbol] = letters.get(symbol, 0) + 1
 
-    for words in lowercase_split_text:
-        characters = list(words)
-        
-        for symbol in characters:
-            
-            if symbol in letters:
-                letters[symbol] += 1
-            else:
-                letters[symbol] = 1       
+    return letters, num_words, text, path
 
-    print(letters)
+def word_report(filepath):
+    characters, num_words, text, path = count_characters(filepath)
+
+    print("============ BOOKBOT ============\n"
+          f"Analyzing book found at {path}\n"
+          "----------- Word Count -----------\n"
+          f"Found {num_words} total words\n"
+          "--------- Character Count ---------")
+
+    sorted_items = sorted(characters.items(), key=lambda item: item[1], reverse=True)
+    for char, count in sorted_items:
+        print(f"{char}: {count}")
+
+    print("============= END ===============")
+
+
 
 
     
